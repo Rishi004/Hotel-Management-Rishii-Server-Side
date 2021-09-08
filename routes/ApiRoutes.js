@@ -53,4 +53,31 @@ router.delete("/delete/:id", (req, res) => {
         .then(() => res.send("Deleted"));
 });
 
+router.put("/edit", (req, res) => {
+    let profit;
+    let loss;
+    if (req.body.income >= req.body.expenses) {
+        profit = req.body.income - req.body.expenses;
+        loss = 0;
+    } else {
+        loss = req.body.expenses - req.body.income;
+        profit = 0;
+    }
+    db.dailyrecords
+        .update(
+            {
+                department: req.body.department,
+                date: req.body.date,
+                income: req.body.income,
+                expenses: req.body.expenses,
+                profit,
+                loss,
+            },
+            {
+                where: { id: req.body.id },
+            }
+        )
+        .then(() => res.send("Updated"));
+});
+
 module.exports = router;
